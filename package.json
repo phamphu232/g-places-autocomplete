@@ -1,0 +1,45 @@
+{
+  "name": "g-places-autocomplete",
+  "version": "1.0.0",
+  "description": "Optimized Library for Google Maps Places Autocomplete",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phamphu232/g-places-autocomplete.git"
+  },
+  "keywords": [
+    "g-places-autocomplete",
+    "places",
+    "places-autocomplete",
+    "places-autocomplete-service",
+    "autocomplete",
+    "autocomplete-service",
+    "google-places",
+    "google-places-api",
+    "google-places-autocomplete",
+    "google-api",
+    "google-maps",
+    "google-maps-api",
+    "google-maps-places",
+    "google-maps-places-api",
+    "location",
+    "address",
+    "form",
+    "geocoding",
+    "geocoding-api",
+    "typescript"
+  ],
+  "author": "phamphu232",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phamphu232/g-places-autocomplete/issues"
+  },
+  "homepage": "https://github.com/phamphu232/g-places-autocomplete#readme",
+  "devDependencies": {
+    "@types/google.maps": "^3.46.0",
+    "typescript": "4.4.4"
+  }
+}
