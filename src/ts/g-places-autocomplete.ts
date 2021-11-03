@@ -5,6 +5,7 @@ class GPlacesAutocomplete {
 
   cache = 24 * 60 * 60;
   cacheKey = "GPlacesAutocomplete";
+  debug = false;
   delay = 300;
   minChar = 1;
   requestOptions: any = {};
@@ -27,6 +28,7 @@ class GPlacesAutocomplete {
   constructor(
     options: {
       cache?: number;
+      debug?: boolean;
       delay?: number;
       minChar?: number;
       requestOptions?: any;
@@ -36,6 +38,7 @@ class GPlacesAutocomplete {
     } = {}
   ) {
     this.cache = options?.cache ?? this.cache;
+    this.debug = options?.debug ?? this.debug;
     this.delay = options?.delay ?? this.delay;
     this.minChar = options?.minChar ?? this.minChar;
     this.requestOptions = options?.requestOptions ?? this.requestOptions;
@@ -167,13 +170,23 @@ class GPlacesAutocomplete {
         item.appendChild(itemText);
         autocompleteList.appendChild(item);
       });
+      const item = document.createElement("li");
+      item.setAttribute("class", "powered-by-google");
+      const image = document.createElement("img");
+      image.setAttribute("alt", "Powered by Google");
+      image.setAttribute(
+        "src",
+        "https://g-places-autocomplete.pages.dev/images/powered-by-google-on-white.png"
+      );
+      item.appendChild(image);
+      autocompleteList.appendChild(item);
       this.showAutocompleteList();
     };
 
     try {
       cachedData = JSON.parse(sessionStorage.getItem(this.cacheKey) || "{}");
     } catch (error) {
-      // Skip exception
+      console.log(error);
     }
 
     if (this.cache) {
@@ -217,13 +230,37 @@ class GPlacesAutocomplete {
 
           try {
             sessionStorage.setItem(this.cacheKey, JSON.stringify(cachedData));
-          } catch (error) {
-            // Skip exception
+          } catch (err) {
+            console.log(err);
           }
         }
         renderAutocompleteList(predictions);
       }
     );
+
+    if (this.debug) {
+      let count = 0;
+      try {
+        const debug = JSON.parse(
+          localStorage.getItem("debug") || "{countGetPlacePredictions:0}"
+        );
+        count = debug.countGetPlacePredictions;
+      } catch (err) {
+        console.log(err);
+      }
+      count++;
+      try {
+        localStorage.setItem(
+          "debug",
+          JSON.stringify({
+            countGetPlacePredictions: count,
+          })
+        );
+      } catch (err) {
+        console.log(err);
+      }
+      console.info(count);
+    }
   };
 
   handleKeyDown = (e: any) => {
@@ -295,8 +332,8 @@ class GPlacesAutocomplete {
         this.useSessionTokenKey,
         JSON.stringify(this.sessionToken)
       );
-    } catch (error) {
-      // Skip exception
+    } catch (err) {
+      console.log(err);
     }
     return this.sessionToken;
   };
