@@ -339,7 +339,7 @@ class GPlacesAutocomplete {
   };
 
   debounce = (fn: (...params: any[]) => any, n: number) => {
-    let timer: number | undefined = undefined;
+    let timer: any;
     return function (this: any, ...args: any[]) {
       clearTimeout(timer);
       timer = setTimeout(() => fn.apply(this, args), n);
