@@ -4,6 +4,13 @@
   "description": "Optimized Library for Google Maps Places Autocomplete",
   "main": "index.js",
   "scripts": {
+    "start": "tsc",
+    "watch": "gulp watch",
+    "build": "gulp build",
+    "gulp:ts": "gulp ts",
+    "lint:code": "eslint --fix ./src --ext .js,.ts,.tsx",
+    "lint:script": "prettier -w ./src -u --loglevel silent",
+    "lint:style": "stylelint --fix \"**/*.{css,scss}\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -39,7 +46,22 @@
   },
   "homepage": "https://github.com/phamphu232/g-places-autocomplete#readme",
   "devDependencies": {
-    "@types/google.maps": "^3.46.0",
-    "typescript": "4.4.4"
+    "@types/google.maps": "3.46.0",
+    "@typescript-eslint/eslint-plugin": "5.2.0",
+    "@typescript-eslint/parser": "5.2.0",
+    "browser-sync": "^2.27.7",
+    "eslint": "8.1.0",
+    "gulp": "^4.0.0",
+    "gulp-ejs": "^5.1.0",
+    "gulp-minify": "^3.1.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "prettier": "2.4.1",
+    "sass": "^1.43.4",
+    "stylelint": "14.0.1",
+    "stylelint-config-standard-scss": "2.0.0",
+    "typescript": "^4.4.4"
   }
 }

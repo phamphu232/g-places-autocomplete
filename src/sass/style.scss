@@ -1,0 +1,106 @@
+.g-places-autocomplete-list {
+  position: absolute;
+}
+
+.autocomplete {
+  position: relative;
+}
+
+.autocomplete::before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: 10px;
+  height: 18px;
+  background: url(https://cdn-bjz.pages.dev/static/images/autocomplete-icons.png);
+  background-position: -4px -161px;
+  top: 7px;
+  left: 8px;
+}
+
+.autocomplete[data-state="done"]::before {
+  background-position: -21px -161px;
+}
+
+.autocomplete > input {
+  padding-left: 22px;
+}
+
+.g-places-autocomplete-list {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-radius: 0 0 4px 4px;
+  z-index: 99;
+  margin-top: -1px;
+  top: 100%;
+  left: 0;
+  right: 0;
+  list-style: none;
+  padding: 0;
+}
+
+.g-places-autocomplete-list li {
+  padding: 5px 8px;
+  cursor: pointer;
+  background-color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.42857143;
+}
+
+.g-places-autocomplete-list li + li {
+  border-top: 1px solid #d4d4d4;
+}
+
+.g-places-autocomplete-list li:hover {
+  background-color: #f7f8f9;
+}
+
+.g-places-autocomplete-list li.powered-by-google {
+  text-align: right;
+  padding: 1px;
+  cursor: auto;
+  border-top: none;
+}
+
+.g-places-autocomplete-list li.powered-by-google:hover {
+  text-align: right;
+  cursor: auto;
+  background-color: unset;
+  border-radius: 0 0 4px 4px;
+}
+
+.g-places-autocomplete-list li.powered-by-google img {
+  height: 13px;
+}
+
+.g-places-autocomplete-list li.active {
+  background-color: #e4ebf1 !important;
+}
+
+.g-places-autocomplete-list li:not(.powered-by-google)::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: blue;
+  margin-right: 5px;
+  display: inline-block;
+  line-height: 22px;
+  width: 10px;
+  height: 17px;
+  margin-right: 5px;
+  margin-bottom: -2px;
+  background: url(https://cdn-bjz.pages.dev/static/images/autocomplete-icons.png);
+  background-position: -4px -161px;
+}
+
+.g-places-autocomplete-list li.active:not(.powered-by-google)::before {
+  background-position: -21px -181px;
+}
+
+.g-places-autocomplete-list li:not(.powered-by-google):hover::before {
+  background-position: -21px -181px;
+}

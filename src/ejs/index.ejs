@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G Places Autocomplete</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 col-md-push-4">
+        <div class="form-group">
+          <label>Điểm đi</label>
+          <div class="autocomplete">
+            <input type="text" class="form-control g-places-autocomplete">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Điểm đến</label>
+          <div class="autocomplete">
+            <input type="text" class="form-control g-places-autocomplete">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmq_w4Yo_NR8ZzoUOAB3G7kaEexaUTEXE&libraries=places">
+</script>
+<script src="/js/g-places-autocomplete.js"></script>
+<script>
+  (function initMap() {
+    new GPlacesAutocomplete({
+      // requestOptions: {
+      //   componentRestrictions: {
+      //     country: 'vn'
+      //   }
+      // },
+      // cache: 0,
+      delay: 500,
+      minChar: 3,
+      trimValue: true,
+      useSessionToken: true,
+    });
+  })();
+</script>
+</html>
