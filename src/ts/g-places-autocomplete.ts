@@ -412,9 +412,17 @@ class GPlacesAutocomplete {
   };
 
   handleSelectMyLocationItem = (e: any) => {
+    const autocompleteInput = this.autocompleteInput;
     this.getCurrentPosition()
-      .then((position) => {
-        console.log(position);
+      .then((position: any) => {
+        autocompleteInput.setAttribute(
+          "data-latitude",
+          position.coords.latitude
+        );
+        autocompleteInput.setAttribute(
+          "data-longitude",
+          position.coords.longitude
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -431,7 +439,7 @@ class GPlacesAutocomplete {
         ) =>
           navigator.geolocation.getCurrentPosition(resolve, reject, {
             enableHighAccuracy: true,
-            maximumAge: 0
+            maximumAge: 0,
           })
       );
     } else {
