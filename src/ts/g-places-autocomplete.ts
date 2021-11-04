@@ -403,16 +403,15 @@ class GPlacesAutocomplete {
 
     const item = document.createElement("li");
     item.setAttribute("data-place-id", "MyLocation");
-    item.setAttribute("class", this.selectorItemClass);
+    item.setAttribute("class", `${this.selectorItemClass} my-location`);
     item.setAttribute("data-index", `0`);
-    item.addEventListener("click", this.handleSelectPlace);
+    item.addEventListener("click", this.handleSelectMyLocationItem);
     item.style.cursor = "pointer";
     item.appendChild(itemText);
     return item;
   };
 
   handleSelectMyLocationItem = (e: any) => {
-    console.log(e);
     this.getCurrentPosition()
       .then((position) => {
         console.log(position);
@@ -420,6 +419,7 @@ class GPlacesAutocomplete {
       .catch((err) => {
         console.log(err);
       });
+    this.handleSelectPlace(e);
   };
 
   getCurrentPosition = () => {
@@ -428,7 +428,11 @@ class GPlacesAutocomplete {
         (
           resolve: PositionCallback,
           reject: PositionErrorCallback | null | undefined
-        ) => navigator.geolocation.getCurrentPosition(resolve, reject)
+        ) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            maximumAge: 0
+          })
       );
     } else {
       return new Promise((resolve) => resolve({}));
