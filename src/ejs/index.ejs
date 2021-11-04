@@ -102,18 +102,19 @@
 
       setLoadingButton(distanceBtn);
 
-      var from, to;
+      var from = {
+        'placeId': fromPlaceId
+      };
+      var to = {
+        'placeId': toPlaceId
+      };
       if (fromPlaceId === "MyLocation" || toPlaceId === "MyLocation") {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
               var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-              from = fromPlaceId === "MyLocation" ? currentPosition : {
-                'placeId': fromPlaceId
-              };
-              to = toPlaceId === "MyLocation" ? currentPosition : {
-                'placeId': toPlaceId
-              };
+              from = fromPlaceId === "MyLocation" ? currentPosition : from;
+              to = toPlaceId === "MyLocation" ? currentPosition : to;
               calcDistance(from, to);
             },
             () => {
@@ -126,16 +127,9 @@
           resetLoadingButton(distanceBtn);
         }
       } else {
-        from = {
-          'placeId': fromPlaceId
-        };
-        to = {
-          'placeId': toPlaceId
-        };
         calcDistance(from, to);
       }
     });
-
 
     function calcDistance(from, to) {
       try {
