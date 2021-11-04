@@ -14,18 +14,28 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="col-md-4 col-md-push-4">
+      <div class="col-md-6 col-md-push-3">
         <div class="form-group">
-          <label>Điểm đi</label>
+          <label>Departure</label>
           <div class="autocomplete">
-            <input type="text" class="form-control g-places-autocomplete">
+            <input type="text" id="from-place" class="form-control g-places-autocomplete">
           </div>
         </div>
         <div class="form-group">
-          <label>Điểm đến</label>
+          <label>Destination</label>
           <div class="autocomplete">
-            <input type="text" class="form-control g-places-autocomplete">
+            <input type="text" id="to-place" class="form-control g-places-autocomplete">
           </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-warning" id="calculate-distance-btn" type="button" text-loading="Calculating..."
+            text-default="Calculate distance" data-state="ready">
+            Calculate distance
+          </button>
+        </div>
+        <div class="form-group">
+          <label>Result</label>
+          <textarea id="calculate-distance-result" class="form-control" row="6"></textarea>
         </div>
       </div>
     </div>
@@ -50,9 +60,109 @@
       debug: true,
       delay: 500,
       minChar: 3,
+      showMyLocation: true,
+      showMyLocationText: "My Location",
       trimValue: true,
       useSessionToken: true,
     });
+
+    var distanceResultInput = document.getElementById('calculate-distance-result');
+    var distanceBtn = document.getElementById('calculate-distance-btn');
+
+    function setLoadingButton(button) {
+      button.setAttribute("data-state", "waiting...");
+      button.innerText = distanceBtn.getAttribute("text-loading");
+      button.classList.add("disabled");
+    }
+
+    function resetLoadingButton(button) {
+      button.setAttribute("data-state", "ready");
+      button.innerText = distanceBtn.getAttribute("text-default");
+      button.classList.remove("disabled");
+    }
+
+    distanceBtn.addEventListener("click", function (e) {
+      if (distanceBtn.getAttribute("data-state") !== "ready") {
+        return;
+      }
+
+      var fromPlaceInput = document.getElementById("from-place");
+      var fromPlaceId = fromPlaceInput.getAttribute("data-place-id");
+      var toPlaceInput = document.getElementById("to-place");
+      var toPlaceId = toPlaceInput.getAttribute("data-place-id");
+
+      if (!fromPlaceId) {
+        alert("Select departure");
+        return;
+      }
+      if (!toPlaceId) {
+        alert("Select destination");
+        return;
+      }
+
+      setLoadingButton(distanceBtn);
+
+      var from, to;
+      if (fromPlaceId === "MyLocation" || toPlaceId === "MyLocation") {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+              from = fromPlaceId === "MyLocation" ? currentPosition : {
+                'placeId': fromPlaceId
+              };
+              to = toPlaceId === "MyLocation" ? currentPosition : {
+                'placeId': toPlaceId
+              };
+              calcDistance(from, to);
+            },
+            () => {
+              alert('Error: You have not given permission to access your current location');
+              resetLoadingButton(distanceBtn);
+            }
+          );
+        } else {
+          alert('Error: Your device does not support getting the current location');
+          resetLoadingButton(distanceBtn);
+        }
+      } else {
+        from = {
+          'placeId': fromPlaceId
+        };
+        to = {
+          'placeId': toPlaceId
+        };
+        calcDistance(from, to);
+      }
+    });
+
+
+    function calcDistance(from, to) {
+      try {
+        var service = new google.maps.DistanceMatrixService();
+        service.getDistanceMatrix({
+          origins: [from],
+          destinations: [to],
+          travelMode: google.maps.TravelMode.DRIVING,
+        }, callback);
+
+        function callback(response, status) {
+          resetLoadingButton(distanceBtn);
+          if (
+            status !== google.maps.DistanceMatrixStatus.OK ||
+            response.rows[0].elements[0].status !== google.maps.DistanceMatrixElementStatus.OK
+          ) {
+            alert("Couldn't find the way. Please choose another address");
+            return;
+          }
+          distanceResultInput.innerText = JSON.stringify(response.rows);
+        }
+
+      } catch (err) {
+        resetLoadingButton(distanceBtn);
+        console.log(err);
+      }
+    }
   })();
 </script>
 

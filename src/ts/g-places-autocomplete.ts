@@ -9,6 +9,8 @@ class GPlacesAutocomplete {
   delay = 300;
   minChar = 1;
   requestOptions: any = {};
+  showMyLocation = false;
+  showMyLocationText = "My Location";
   trimValue = true;
   useSessionToken = false;
   useSessionTokenKey = "GPlacesAutocompleteSessionTokenKey";
@@ -21,6 +23,7 @@ class GPlacesAutocomplete {
 
   selectorListClass = "g-places-autocomplete-list";
   selectorItemClass = "g-places-autocomplete-item";
+  selectorItemTextClass = "g-places-autocomplete-item-text";
   selectorInput = ".g-places-autocomplete";
 
   hasAutocompleteList = false;
@@ -33,6 +36,8 @@ class GPlacesAutocomplete {
       minChar?: number;
       requestOptions?: any;
       selector?: string;
+      showMyLocation?: boolean;
+      showMyLocationText?: string;
       trimValue?: boolean;
       useSessionToken?: boolean;
     } = {}
@@ -43,6 +48,9 @@ class GPlacesAutocomplete {
     this.minChar = options?.minChar ?? this.minChar;
     this.requestOptions = options?.requestOptions ?? this.requestOptions;
     this.selectorInput = options?.selector ?? this.selectorInput;
+    this.showMyLocation = options?.showMyLocation ?? this.showMyLocation;
+    this.showMyLocationText =
+      options?.showMyLocationText ?? this.showMyLocationText;
     this.trimValue = options?.trimValue ?? this.trimValue;
     this.useSessionToken = options?.useSessionToken ?? this.useSessionToken;
     this.init();
@@ -75,10 +83,13 @@ class GPlacesAutocomplete {
       ul.style.right = "0";
       ul.style.zIndex = "999";
       ul.style.paddingLeft = "0";
+
+      this.showMyLocation && ul.appendChild(this.getMyLocationItem());
+
       parent.appendChild(ul);
       parent.style.position = "relative";
       input.addEventListener("focus", this.handleFocus);
-      input.addEventListener("click", this.handleFocus);
+      input.addEventListener("click", this.handleClick);
       input.addEventListener("blur", this.handleBlur);
       input.addEventListener(
         "input",
@@ -99,12 +110,16 @@ class GPlacesAutocomplete {
   };
 
   handleFocus = (e: any) => {
+    this.handleClick(e);
+    this.autocompleteInput.select();
+  };
+
+  handleClick = (e: any) => {
     this.autocompleteWrap = e.target.parentElement;
     this.autocompleteList = this.autocompleteWrap.querySelector(
       `.${this.selectorListClass}`
     );
     this.autocompleteInput = e.target;
-    this.autocompleteInput.select();
     this.autocompleteValue = e.target.value;
     this.showAutocompleteList();
     this.unsetIndex();
@@ -156,15 +171,17 @@ class GPlacesAutocomplete {
     ) => {
       this.hideAutocompleteList();
       autocompleteList.innerHTML = "";
+      this.showMyLocation &&
+        autocompleteList.appendChild(this.getMyLocationItem());
       predictions.forEach((prediction, i) => {
         const itemText = document.createElement("span");
-        itemText.setAttribute("class", "g-places-autocomplete-item-text");
+        itemText.setAttribute("class", this.showMyLocationText);
         itemText.innerText = prediction.description;
 
         const item = document.createElement("li");
         item.setAttribute("data-place-id", prediction.place_id);
         item.setAttribute("class", this.selectorItemClass);
-        item.setAttribute("data-index", `${i}`);
+        item.setAttribute("data-index", `${this.showMyLocation ? i + 1 : i}`);
         item.addEventListener("click", this.handleSelectPlace);
         item.style.cursor = "pointer";
         item.appendChild(itemText);
@@ -376,6 +393,45 @@ class GPlacesAutocomplete {
       this.autocompleteInput.removeAttribute("data-place-id");
       this.autocompleteInput.removeAttribute("data-state");
       this.autocompleteWrap.removeAttribute("data-state");
+    }
+  };
+
+  getMyLocationItem = () => {
+    const itemText = document.createElement("span");
+    itemText.setAttribute("class", this.selectorItemTextClass);
+    itemText.innerText = this.showMyLocationText;
+
+    const item = document.createElement("li");
+    item.setAttribute("data-place-id", "MyLocation");
+    item.setAttribute("class", this.selectorItemClass);
+    item.setAttribute("data-index", `0`);
+    item.addEventListener("click", this.handleSelectPlace);
+    item.style.cursor = "pointer";
+    item.appendChild(itemText);
+    return item;
+  };
+
+  handleSelectMyLocationItem = (e: any) => {
+    console.log(e);
+    this.getCurrentPosition()
+      .then((position) => {
+        console.log(position);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  getCurrentPosition = () => {
+    if (navigator.geolocation) {
+      return new Promise(
+        (
+          resolve: PositionCallback,
+          reject: PositionErrorCallback | null | undefined
+        ) => navigator.geolocation.getCurrentPosition(resolve, reject)
+      );
+    } else {
+      return new Promise((resolve) => resolve({}));
     }
   };
 }
